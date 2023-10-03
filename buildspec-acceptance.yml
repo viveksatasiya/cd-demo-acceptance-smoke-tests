@@ -13,7 +13,7 @@ phases:
       - echo Installing project dependencies...
       - npm install
       - echo Reading metadata from the metadataOutput file...
-      - for key in $(jq -r 'keys[]' $METADATA_FILE); do export $key=$(jq -r ".${key}" $METADATA_FILE); done
+      - for key in $(jq -r 'keys[]' $CODEBUILD_SRC_DIR_MetadataArtifects/metadataOutput.json); do export $key=$(jq -r ".${key}" $CODEBUILD_SRC_DIR_MetadataArtifects/metadataOutput.json); done
       - echo MicroserviceA Version- $MicroserviceA # This should print the version for MicroserviceA
       - env
   pre_build:
