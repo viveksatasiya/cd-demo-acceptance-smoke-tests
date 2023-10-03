@@ -12,6 +12,11 @@ phases:
       - ls $CODEBUILD_SRC_DIR_MetadataArtifects
       - echo Installing project dependencies...
       - npm install
+      - echo Reading metadata from the metadataOutput file...
+      - for key in $(jq -r 'keys[]' $CODEBUILD_SRC_DIR_MetadataArtifects/metadataOutput.json); do export $key=$(jq -r ".$key" $CODEBUILD_SRC_DIR_MetadataArtifects/metadataOutput.json); done
+      # Now you can use the environment variables in your build
+      - echo $MicroserviceBackendA # This should print the version from metadataOutput.json
+      - env
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
@@ -20,11 +25,6 @@ phases:
       - docker-compose pull app
   build:
     commands:
-      - echo Reading metadata from the metadataOutput file...
-      - for key in $(jq -r 'keys[]' $CODEBUILD_SRC_DIR_MetadataArtifects/metadataOutput.json); do export $key=$(jq -r ".$key" $CODEBUILD_SRC_DIR_MetadataArtifects/metadataOutput.json); done
-      # Now you can use the environment variables in your build
-      - echo $MicroserviceBackendA # This should print the version from metadataOutput.json
-      - env
       - echo Build started on `date`
       - echo Running Docker containers...
       - docker-compose up -d
