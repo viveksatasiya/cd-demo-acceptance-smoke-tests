@@ -4,15 +4,12 @@ env:
   variables:
     ECR_REPOSITORY: '671939990958.dkr.ecr.ap-south-1.amazonaws.com/cd-demo'
     COMMIT_HASH: 'latest'
-    METADATA_FILE: '/codebuild/output/src<random-string>/src/metadataOutput.json'
 
 phases:
   install:
     commands:
       - echo listing -----
       - ls $CODEBUILD_SRC_DIR_MetadataArtifects
-      - env
-      - COMMIT_HASH=$(bash -c "echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7")
       - echo Installing project dependencies...
       - npm install
   pre_build:
@@ -24,7 +21,10 @@ phases:
   build:
     commands:
       - echo Reading metadata from the metadataOutput file...
-      - cat $METADATA_FILE
+      - for key in $(jq -r 'keys[]' $CODEBUILD_SRC_DIR_MetadataArtifects/metadataOutput.json); do export $key=$(jq -r ".$key" $CODEBUILD_SRC_DIR_MetadataArtifects/metadataOutput.json); done
+      # Now you can use the environment variables in your build
+      - echo $MicroserviceBackendA # This should print the version from metadataOutput.json
+      - env
       - echo Build started on `date`
       - echo Running Docker containers...
       - docker-compose up -d
