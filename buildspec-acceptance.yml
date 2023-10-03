@@ -10,7 +10,8 @@ phases:
   install:
     commands:
       - echo listing -----
-      - ls $CODEBUILD_SRC_DIR_MetadataSource
+      - ls $CODEBUILD_SRC_DIR_MetadataArtifects
+      - env
       - COMMIT_HASH=$(bash -c "echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7")
       - echo Installing project dependencies...
       - npm install
