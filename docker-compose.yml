@@ -1,7 +1,7 @@
 version: '3'
 services:
   app:
-    image: 671939990958.dkr.ecr.ap-south-1.amazonaws.com/cd-demo:${MicroserviceA}
+    image: 671939990958.dkr.ecr.ap-south-1.amazonaws.com/cd-demo:${MicroserviceBackendA}
     ports:
       - "3002:3002"
     environment:
